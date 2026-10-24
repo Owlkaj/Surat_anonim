@@ -79,7 +79,7 @@ Kirim pesan personal tanpa menampilkan identitas, dengan kontrol penuh di tangan
 | Autentikasi | Laravel Breeze (Blade) |
 | Frontend | Blade, Tailwind CSS, Vanilla JavaScript, font Inter |
 | Build Tool | Vite, PostCSS |
-| Database | SQLite (default) — kompatibel dengan MySQL |
+| Database | Supabase |
 | Queue | Laravel Database Queue |
 | Testing | PHPUnit 11 |
 
