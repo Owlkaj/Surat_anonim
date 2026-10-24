@@ -1,59 +1,270 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# ✉️ SuratAnonim
 
-## About Laravel
+**Sistem Surat Anonim Berbasis Persetujuan (*Consent-Based Anonymous Letters*)**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Kirim pesan personal tanpa menampilkan identitas, dengan kontrol penuh di tangan penerima.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?logo=tailwind-css&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-50%20passed-success)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+</div>
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 📖 Daftar Isi
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- [Tentang Proyek](#-tentang-proyek)
+- [Fitur Utama](#-fitur-utama)
+- [Teknologi](#-teknologi)
+- [Arsitektur & Struktur Folder](#-arsitektur--struktur-folder)
+- [Instalasi](#-instalasi)
+- [Menjalankan Aplikasi](#-menjalankan-aplikasi)
+- [Perintah Artisan Khusus](#-perintah-artisan-khusus)
+- [Pengujian](#-pengujian)
+- [Keamanan & Privasi](#-keamanan--privasi)
+- [Daftar Rute Utama](#-daftar-rute-utama)
+- [Lisensi](#-lisensi)
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 💡 Tentang Proyek
 
-### Premium Partners
+**SuratAnonim** adalah aplikasi web untuk menulis surat yang identitas pengirimnya **tidak ditampilkan** kepada penerima. Berbeda dengan platform pesan anonim pada umumnya, SuratAnonim dirancang dengan prinsip:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Consent-first** — penerima bebas membaca, mengabaikan, membalas, melaporkan, atau memblokir.
+- **Anonim bagi lawan bicara, akuntabel bagi platform** — identitas disembunyikan antarpengguna, namun platform tetap dapat menindak penyalahgunaan.
+- **Privat sebagai default** — surat tidak pernah dipublikasikan tanpa pilihan eksplisit pengirim **dan** persetujuan moderator.
 
-## Contributing
+### Peran Pengguna
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Peran | Hak Akses |
+|---|---|
+| **Pengunjung** | Melihat feed publik dan melaporkan konten |
+| **Pengirim** (login) | Membuat, mengelola, mencabut tautan, dan mengajukan publikasi surat |
+| **Penerima** (tanpa akun) | Membaca surat melalui tautan rahasia, melapor, dan memblokir |
+| **Penerima** (login) | Membalas surat secara anonim melalui thread |
+| **Admin / Moderator** | Meninjau publikasi, menangani laporan, dan melakukan takedown |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## ✨ Fitur Utama
 
-## Security Vulnerabilities
+| Fitur | Deskripsi |
+|---|---|
+| 📝 **Buat Surat** | Teks 1–5.000 karakter, satu target (email / label / tanpa target), dan visibilitas |
+| 🔗 **Tautan Rahasia** | Token acak 21 karakter, berlaku 30 hari, dan dapat dicabut kapan saja |
+| 📧 **Notifikasi Email** | Hanya berisi tautan, **tanpa isi surat**; diproses lewat queue dengan retry & idempotensi |
+| 🎵 **Link Musik** | Spotify, YouTube, YouTube Music, Apple Music, SoundCloud (tanpa autoplay, tanpa upload) |
+| 💬 **Balasan Anonim** | Thread dua arah dengan label netral "Pengirim anonim" dan "Penerima" |
+| 🌐 **Feed Publik** | Hanya menampilkan surat yang diajukan pengirim dan disetujui moderator |
+| 🚩 **Laporan & Auto-Hide** | Surat otomatis ditahan setelah mencapai ambang laporan |
+| 🚫 **Blokir Kontak** | Penerima dapat berhenti menerima email dari platform |
+| 🛡️ **Panel Moderasi** | Setujui, tolak, takedown, dan selesaikan laporan, lengkap dengan audit log |
+| 🗂️ **Dashboard Hybrid** | Kartu surat yang dapat disusun ulang (drag-and-drop & keyboard) |
+| 🧹 **Retensi Data** | Pembersihan otomatis isi surat, balasan, dan data kontak yang kedaluwarsa |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🛠 Teknologi
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Lapisan | Teknologi |
+|---|---|
+| Backend | PHP 8.2+, Laravel 12, Eloquent ORM |
+| Autentikasi | Laravel Breeze (Blade) |
+| Frontend | Blade, Tailwind CSS, Vanilla JavaScript, font Inter |
+| Build Tool | Vite, PostCSS |
+| Database | SQLite (default) — kompatibel dengan MySQL |
+| Queue | Laravel Database Queue |
+| Testing | PHPUnit 11 |
+
+---
+
+## 🏗 Arsitektur & Struktur Folder
+
+Aplikasi menggunakan pola **MVC + Service Layer**: controller tetap tipis, sedangkan logika bisnis ditempatkan di `app/Services`.
+
+```
+app/
+├── Console/Commands/     # Perintah artisan khusus (admin, purge, test email)
+├── Http/Controllers/     # Letter, LetterAccess, Reply, Report, PublicFeed, Admin/Moderation
+├── Jobs/                 # SendLetterNotificationJob (pengiriman email via queue)
+├── Mail/                 # LetterNotificationMail
+├── Models/               # Letter, ReplyThread, Reply, Report, BlockedContact, dll.
+└── Services/
+    ├── SecretLinkService.php      # Pembuatan & hashing token
+    ├── PrivacyService.php         # HMAC kontak, enkripsi, masking email
+    ├── ModerationService.php      # Filter konten & ambang laporan
+    ├── MusicUrlValidator.php      # Allowlist URL musik
+    ├── AnonymousReplyService.php  # Thread & otorisasi balasan
+    └── RetentionService.php       # Pembersihan data kedaluwarsa
+database/migrations/      # Skema 10+ tabel
+resources/views/          # Blade views (letters, feed, replies, admin, auth)
+routes/web.php            # Definisi rute aplikasi
+tests/                    # Unit & Feature tests
+```
+
+### Skema Database
+
+| Tabel | Fungsi |
+|---|---|
+| `users` | Akun pengguna |
+| `letters` | Surat, token hash, visibilitas, status moderasi, masa berlaku |
+| `reply_threads` | Thread percakapan per surat |
+| `replies` | Pesan balasan dalam thread |
+| `delivery_jobs` | Status pengiriman email (queued → sent / failed) |
+| `reports` | Laporan pelanggaran konten |
+| `blocked_contacts` | Daftar kontak yang diblokir (disimpan sebagai HMAC) |
+| `admin_users` | Peran admin / moderator |
+| `audit_logs` | Jejak tindakan moderasi |
+| `rate_limits` | Pembatasan frekuensi aksi |
+
+---
+
+## 🚀 Instalasi
+
+### Prasyarat
+
+- PHP **8.2** atau lebih baru (ekstensi `pdo_sqlite`, `mbstring`, `openssl`)
+- Composer
+- Node.js **18+** & npm
+
+### Langkah Instalasi
+
+```bash
+# 1. Clone repository
+git clone https://github.com/Owlkaj/Surat_anonim.git
+cd Surat_anonim
+
+# 2. Install dependensi
+composer install
+npm install
+
+# 3. Siapkan file environment
+cp .env.example .env
+php artisan key:generate
+
+# 4. Siapkan database (SQLite)
+touch database/database.sqlite      # Windows: type nul > database\database.sqlite
+php artisan migrate
+
+# 5. Build aset frontend
+npm run build
+```
+
+> **Alternatif cepat:** `composer setup` menjalankan langkah 2–5 secara otomatis.
+
+### Konfigurasi Email (opsional)
+
+Secara default `MAIL_MAILER=log`, sehingga email ditulis ke `storage/logs/laravel.log`. Untuk mengirim email sungguhan, atur SMTP di `.env`:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=your-username
+MAIL_PASSWORD=your-password
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="SuratAnonim"
+```
+
+---
+
+## ▶️ Menjalankan Aplikasi
+
+**Mode pengembangan** (server, queue worker, log, dan Vite sekaligus):
+
+```bash
+composer dev
+```
+
+**Atau jalankan secara manual** di terminal terpisah:
+
+```bash
+php artisan serve          # Web server → http://127.0.0.1:8000
+php artisan queue:work     # Worker pengiriman email
+npm run dev                # Hot reload aset frontend
+```
+
+---
+
+## ⚙️ Perintah Artisan Khusus
+
+| Perintah | Fungsi |
+|---|---|
+| `php artisan surat:make-admin {email} --role=admin` | Menjadikan pengguna sebagai admin / moderator |
+| `php artisan letters:purge-expired` | Menjalankan pembersihan data kedaluwarsa |
+| `php artisan surat:test-email {to}` | Menguji konfigurasi pengiriman email |
+
+Contoh membuat moderator:
+
+```bash
+php artisan surat:make-admin moderator@example.com --role=moderator
+```
+
+---
+
+## 🧪 Pengujian
+
+```bash
+php artisan test
+```
+
+Hasil saat ini: **50 tests passed (154 assertions)**, mencakup:
+
+- Unit test layanan (token, validasi musik, masking email, moderasi)
+- Autentikasi & profil
+- Pengiriman email (idempotensi, retry, bounce permanen, batas harian)
+- Akses tautan rahasia, thread balasan, ambang laporan, blokir, moderasi feed, dan retensi data
+
+---
+
+## 🔒 Keamanan & Privasi
+
+| Aspek | Implementasi |
+|---|---|
+| Token tautan | CSPRNG 21 karakter; database hanya menyimpan **hash SHA-256** |
+| Kontak target | Dicocokkan menggunakan **HMAC-SHA256**; email disimpan terenkripsi sementara |
+| Tampilan email | Disamarkan (`a***@domain.com`) |
+| Isi email notifikasi | Tidak memuat isi surat maupun link musik |
+| XSS | Seluruh konten pengguna dirender sebagai teks biasa |
+| Otorisasi | Pemeriksaan server-side untuk thread, surat, dan panel admin (anti-IDOR) |
+| Redirect login | Hanya menerima path lokal (anti open-redirect) |
+| Rate limiting | Pembuatan surat, notifikasi per target, akses tautan, dan laporan |
+| Retensi | Isi surat, balasan, dan kontak terenkripsi dihapus setelah kedaluwarsa |
+
+> ⚠️ **Catatan:** "Anonim" berarti anonim terhadap lawan bicara dan publik, **bukan** anonimitas absolut terhadap operator platform atau proses hukum yang sah.
+
+---
+
+## 🗺 Daftar Rute Utama
+
+| Metode | URL | Keterangan | Akses |
+|---|---|---|---|
+| GET | `/` | Halaman utama | Publik |
+| GET | `/feed` | Feed publik termoderasi | Publik |
+| GET | `/letters/{token}` · `/l/{token}` · `/buka/{token}` | Membaca surat via tautan rahasia | Publik |
+| POST | `/reports` | Mengirim laporan | Publik |
+| GET | `/dashboard` | Dashboard pengguna | Login |
+| GET / POST | `/letters`, `/letters/create` | Daftar & buat surat | Login |
+| POST | `/my-letters/{id}/revoke` | Cabut tautan | Login |
+| POST | `/my-letters/{id}/request-public` | Ajukan ke feed publik | Login |
+| GET | `/inbox`, `/threads/{id}` | Kotak masuk & thread balasan | Login |
+| GET | `/admin/moderation` | Panel moderasi | Admin / Moderator |
+
+---
+
+## 📄 Lisensi
+
+Proyek ini dirilis di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
+
+<div align="center">
+
+Dibuat untuk Tugas Besar **Pemrograman Berbasis Kerangka Kerja (PBKK)**.
+
+</div>

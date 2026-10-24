@@ -41,3 +41,7 @@ Thumbs.db
 # Binary tunnel (ukuran besar, unduh terpisah)
 cloudflared.exe
 *.exe
+
+# Skrip server manager lokal
+server_manager.ps1
+*.bat
