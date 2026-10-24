@@ -45,3 +45,7 @@ cloudflared.exe
 # Skrip server manager lokal
 server_manager.ps1
 *.bat
+/storage/framework/*.json
+
+# Folder screenshot
+/screenshots/

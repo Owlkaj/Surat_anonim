@@ -7,6 +7,8 @@ use App\Models\BlockedContact;
 use App\Models\DeliveryJob;
 use App\Models\Letter;
 use App\Models\RateLimit;
+use App\Models\Reply;
+use App\Models\Report;
 use App\Services\ModerationService;
 use App\Services\MusicUrlValidator;
 use App\Services\PrivacyService;
@@ -44,7 +46,7 @@ class LetterController extends Controller
         }
 
         if ($request->filled('visibility')
-            && in_array($request->visibility, ['private', 'unlisted', 'public_pending', 'public'], true)) {
+            && in_array($request->visibility, ['private', 'public_pending', 'public'], true)) {
             $query->where('visibility', $request->visibility);
         }
 
@@ -86,11 +88,11 @@ class LetterController extends Controller
         // 2. Validate input
         $validated = $request->validate([
             'body' => ['required', 'string', 'min:1', 'max:5000'],
-            'target_type' => ['required', 'in:email,manual,none'],
+            'target_type' => ['required', 'in:email,manual'],
             'target_email' => ['nullable', 'required_if:target_type,email', 'email', 'max:255'],
             'target_label' => ['nullable', 'string', 'max:100'],
             'music_url' => ['nullable', 'string', 'max:1000'],
-            'visibility' => ['required', 'in:private,unlisted,public_pending'],
+            'visibility' => ['required', 'in:private,public_pending'],
         ], [
             'body.required' => 'Isi surat wajib diisi.',
             'body.max' => 'Isi surat maksimal 5.000 karakter.',
@@ -220,6 +222,50 @@ class LetterController extends Controller
         $this->secretLinkService->revoke($letter);
 
         return back()->with('success', 'Tautan rahasia berhasil dicabut. Surat tidak lagi dapat diakses oleh pemegang link.');
+    }
+
+    /**
+     * Hapus surat milik pengguna secara permanen beserta seluruh data terkait.
+     */
+    public function destroy(Letter $letter)
+    {
+        if ($letter->sender_user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        DB::transaction(function () use ($letter) {
+            $thread = $letter->thread()->first();
+
+            if ($thread) {
+                $replyIds = Reply::withTrashed()
+                    ->where('thread_id', $thread->id)
+                    ->pluck('id');
+
+                if ($replyIds->isNotEmpty()) {
+                    Report::where('content_type', 'reply')
+                        ->whereIn('content_id', $replyIds)
+                        ->delete();
+
+                    Reply::withTrashed()
+                        ->whereIn('id', $replyIds)
+                        ->forceDelete();
+                }
+
+                $thread->delete();
+            }
+
+            Report::where('content_type', 'letter')
+                ->where('content_id', $letter->id)
+                ->delete();
+
+            $letter->deliveryJobs()->delete();
+
+            // forceDelete menghapus permanen, bukan sekadar soft delete.
+            $letter->forceDelete();
+        });
+
+        return redirect()->route('letters.index')
+            ->with('success', 'Surat berhasil dihapus permanen. Tautan rahasia, balasan, dan data pengiriman terkait sudah tidak berlaku.');
     }
 
     public function requestPublic(Letter $letter)

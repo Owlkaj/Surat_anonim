@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Public URL (opsional)
+    |--------------------------------------------------------------------------
+    |
+    | Jika aplikasi diakses melalui domain publik tetapi APP_URL masih lokal,
+    | isi PUBLIC_APP_URL agar tautan di email memakai domain yang benar.
+    | Contoh: https://suratanonim.example.com
+    |
+    */
+
+    'public_url' => env('PUBLIC_APP_URL', env('APP_URL', 'http://localhost')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

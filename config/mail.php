@@ -46,7 +46,7 @@ return [
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
-            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('MAIL_FROM_ADDRESS', 'hello@example.com'), PHP_URL_HOST)),
         ],
 
         'ses' => [
@@ -114,5 +114,23 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reply-To dan Unsubscribe
+    |--------------------------------------------------------------------------
+    |
+    | Reply-To membantu penerima menghubungi pengelola platform (bukan pengirim
+    | anonim) dan merupakan sinyal deliverability yang baik. List-Unsubscribe
+    | hanya dikirim jika URL-nya diisi; gunakan halaman preferensi/opt-out.
+    |
+    */
+
+    'reply_to' => [
+        'address' => env('MAIL_REPLY_TO_ADDRESS', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
+        'name' => env('MAIL_REPLY_TO_NAME', env('MAIL_FROM_NAME', env('APP_NAME', 'SuratAnonim'))),
+    ],
+
+    'unsubscribe_url' => env('MAIL_UNSUBSCRIBE_URL'),
 
 ];

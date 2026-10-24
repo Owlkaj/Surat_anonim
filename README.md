@@ -57,10 +57,10 @@ Kirim pesan personal tanpa menampilkan identitas, dengan kontrol penuh di tangan
 
 | Fitur | Deskripsi |
 |---|---|
-| 📝 **Buat Surat** | Teks 1–5.000 karakter, satu target (email / label / tanpa target), dan visibilitas |
-| 🔗 **Tautan Rahasia** | Token acak 21 karakter, berlaku 30 hari, dan dapat dicabut kapan saja |
+| 📝 **Buat Surat** | Teks 1–5.000 karakter, target email / label manual, dan visibilitas privat atau pengajuan publik |
+| 🔗 **Tautan Rahasia** | Token acak 21 karakter, berlaku 30 hari, dapat dicabut, dan dapat dihapus permanen |
 | 📧 **Notifikasi Email** | Hanya berisi tautan, **tanpa isi surat**; diproses lewat queue dengan retry & idempotensi |
-| 🎵 **Link Musik** | Spotify, YouTube, YouTube Music, Apple Music, SoundCloud (tanpa autoplay, tanpa upload) |
+| 🎵 **Musik Latar** | Autoplay tanpa kotak pemutar: Spotify, YouTube, YouTube Music, Apple Music, SoundCloud + tombol volume mengambang |
 | 💬 **Balasan Anonim** | Thread dua arah dengan label netral "Pengirim anonim" dan "Penerima" |
 | 🌐 **Feed Publik** | Hanya menampilkan surat yang diajukan pengirim dan disetujui moderator |
 | 🚩 **Laporan & Auto-Hide** | Surat otomatis ditahan setelah mencapai ambang laporan |
@@ -171,7 +171,13 @@ MAIL_USERNAME=your-username
 MAIL_PASSWORD=your-password
 MAIL_FROM_ADDRESS="noreply@example.com"
 MAIL_FROM_NAME="SuratAnonim"
+MAIL_REPLY_TO_ADDRESS="hello@example.com"
+MAIL_REPLY_TO_NAME="SuratAnonim"
+MAIL_UNSUBSCRIBE_URL="https://example.com/berhenti-email"
+PUBLIC_APP_URL="https://example.com"
 ```
+
+> **Agar tidak masuk folder spam:** gunakan domain sendiri (bukan `@gmail.com` atau tunnel sementara), aktifkan **SPF**, **DKIM**, dan **DMARC** di DNS, lalu kirim melalui penyedia email transaksional. Isi `PUBLIC_APP_URL` dengan domain https publik agar tautan surat di email dapat dibuka penerima. Jalankan `php artisan surat:test-email kamu@email.com` untuk melihat checklist deliverability.
 
 ---
 

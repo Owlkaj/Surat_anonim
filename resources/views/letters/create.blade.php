@@ -63,7 +63,7 @@
                         <p class="text-xs text-[#617586] mt-0.5">Pilih bagaimana surat rahasia ini akan dibagikan kepada penerima.</p>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <label class="flex flex-col p-4 rounded-xl border cursor-pointer transition"
                                :class="targetType === 'manual' ? 'border-[#38A9F5] bg-blue-50/50' : 'border-[#E2EAF0] hover:bg-gray-50'">
                             <div class="flex items-center gap-2 mb-2">
@@ -80,15 +80,6 @@
                                 <span class="text-sm font-bold text-[#172B3A]">Notifikasi Email</span>
                             </div>
                             <span class="text-xs text-[#617586] leading-relaxed">Kirim notifikasi berisi link rahasia ke email target (isi surat tidak disertakan).</span>
-                        </label>
-
-                        <label class="flex flex-col p-4 rounded-xl border cursor-pointer transition"
-                               :class="targetType === 'none' ? 'border-[#38A9F5] bg-blue-50/50' : 'border-[#E2EAF0] hover:bg-gray-50'">
-                            <div class="flex items-center gap-2 mb-2">
-                                <input type="radio" name="target_type" value="none" x-model="targetType" class="text-[#38A9F5] focus:ring-[#38A9F5]">
-                                <span class="text-sm font-bold text-[#172B3A]">Tanpa Kontak</span>
-                            </div>
-                            <span class="text-xs text-[#617586] leading-relaxed">Surat hanya disimpan dan diakses jika kamu membuka atau membagikan linknya.</span>
                         </label>
                     </div>
 
@@ -151,7 +142,7 @@
 
                     <div class="flex items-start gap-2 text-xs text-[#617586]">
                         <svg class="w-4 h-4 text-[#38A9F5] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>Hanya mendukung URL <strong>HTTPS</strong> dari <strong>Spotify, YouTube, Apple Music, atau SoundCloud</strong>. Musik tidak akan diputar otomatis.</span>
+                        <span>Hanya mendukung URL <strong>HTTPS</strong> dari <strong>Spotify, YouTube, Apple Music, atau SoundCloud</strong>. Musik diputar otomatis saat surat dibuka; penerima dapat mengatur volume lewat tombol musik yang mengambang.</span>
                     </div>
 
                     @error('music_url')
@@ -175,15 +166,6 @@
                             <div>
                                 <span class="text-sm font-bold text-[#172B3A] block">Privat (Default)</span>
                                 <span class="text-xs text-[#617586] leading-relaxed block mt-0.5">Hanya kamu dan pemegang link rahasia yang dapat mengakses. Surat tidak akan pernah tampil di feed publik.</span>
-                            </div>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition"
-                               :class="vis === 'unlisted' ? 'border-[#38A9F5] bg-blue-50/50' : 'border-[#E2EAF0] hover:bg-gray-50'">
-                            <input type="radio" name="visibility" value="unlisted" x-model="vis" class="mt-0.5 text-[#38A9F5] focus:ring-[#38A9F5]">
-                            <div>
-                                <span class="text-sm font-bold text-[#172B3A] block">Unlisted (Hanya via Tautan)</span>
-                                <span class="text-xs text-[#617586] leading-relaxed block mt-0.5">Tidak terindeks di feed publik, namun siapa pun yang memperoleh link rahasia dapat membaca surat.</span>
                             </div>
                         </label>
 

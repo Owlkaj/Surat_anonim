@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/letters/create', [LetterController::class, 'create'])->name('letters.create');
     Route::post('/letters', [LetterController::class, 'store'])->name('letters.store');
     Route::get('/my-letters/{letter}', [LetterController::class, 'show'])->name('letters.show');
+    Route::delete('/my-letters/{letter}', [LetterController::class, 'destroy'])->name('letters.destroy');
     Route::post('/my-letters/{letter}/revoke', [LetterController::class, 'revoke'])->name('letters.revoke');
     Route::post('/my-letters/{letter}/request-public', [LetterController::class, 'requestPublic'])->name('letters.requestPublic');
 

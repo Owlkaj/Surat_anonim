@@ -42,7 +42,7 @@
                                     <p class="text-sm text-[#172B3A] whitespace-pre-wrap bg-gray-50 p-3 rounded-lg border border-gray-100">{{ Str::limit(trim($letter->body), 400) }}</p>
 
                                     <div class="flex flex-wrap items-center gap-3 text-xs text-[#617586]">
-                                        <span>Target: <strong>{{ $letter->target_label ?? 'Manual / Tanpa Kontak' }}</strong></span>
+                                        <span>Target: <strong>{{ $letter->target_label ?? 'Tanpa label' }}</strong></span>
                                         <span>Dibuka: <strong>{{ $letter->view_count }}x</strong></span>
                                         @if ($letter->expires_at)
                                             <span>Kedaluwarsa: <strong>{{ $letter->expires_at->translatedFormat('d M Y') }}</strong></span>

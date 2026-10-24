@@ -40,6 +40,19 @@
                             </p>
                         </div>
                     </div>
+
+                    @php
+                        $publicHost = strtolower((string) parse_url(config('app.public_url', config('app.url')), PHP_URL_HOST));
+                        $publicUrlWarning = in_array($publicHost, ['', 'localhost', '127.0.0.1', '::1'], true)
+                            || str_ends_with($publicHost, '.trycloudflare.com')
+                            || str_ends_with($publicHost, '.ngrok-free.app');
+                    @endphp
+
+                    @if ($publicUrlWarning)
+                        <p class="text-[11px] font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-3 leading-relaxed">
+                            Tautan di email masih mengarah ke alamat lokal/tunnel sementara. Penerima tidak dapat membukanya dan filter spam dapat memblokirnya. Atur <code class="font-mono">PUBLIC_APP_URL</code> ke domain https publik.
+                        </p>
+                    @endif
                 </div>
             @endif
 
@@ -111,7 +124,7 @@
 
                     <div class="text-xs text-[#617586] flex flex-wrap items-center gap-4">
                         <span>Dibuka: <strong>{{ $letter->view_count }} kali</strong></span>
-                        <span>Target: <strong>{{ $letter->target_label ?? 'Manual / Tanpa Kontak' }}</strong></span>
+                        <span>Target: <strong>{{ $letter->target_label ?? 'Tanpa label' }}</strong></span>
                     </div>
                 </div>
 
@@ -127,30 +140,8 @@
                     <div class="letter-body-text p-6 rounded-xl bg-gray-50/60 border border-gray-100">{{ trim($letter->body) }}</div>
                 </div>
 
-                <!-- Music Player if provided -->
-                @if ($mediaInfo)
-                    <div class="p-4 rounded-xl border border-blue-100 bg-blue-50/40 space-y-2">
-                        <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-[#172B3A]">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-[#38A9F5]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
-                                Lagu Pengiring ({{ $mediaInfo['provider'] }})
-                            </span>
-                            <a href="{{ $mediaInfo['url'] }}" target="_blank" rel="noopener noreferrer" class="text-[#38A9F5] hover:underline">
-                                Buka Tautan Eksternal &rarr;
-                            </a>
-                        </div>
-
-                        @if ($mediaInfo['embed_url'])
-                            <div class="mt-2 rounded-xl overflow-hidden aspect-video max-h-48">
-                                <iframe src="{{ $mediaInfo['embed_url'] }}"
-                                        title="Pemutar musik {{ $mediaInfo['provider'] }}"
-                                        class="w-full h-full border-0"
-                                        allow="encrypted-media"
-                                        loading="lazy"></iframe>
-                            </div>
-                        @endif
-                    </div>
-                @endif
+                <!-- Musik latar: autoplay tanpa kotak pemutar di dalam kartu surat. -->
+                <x-letter-music :media-info="$mediaInfo" />
 
                 <!-- Thread section if exists -->
                 @if ($thread)
@@ -193,6 +184,14 @@
                                 </button>
                             </form>
                         @endif
+
+                        <form action="{{ route('letters.destroy', $letter->id) }}" method="POST" onsubmit="return confirm('Hapus PERMANEN surat ini? Surat, balasan, dan seluruh data terkait akan dihapus dan tidak dapat dikembalikan. Tautan rahasia langsung tidak berlaku.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-danger text-xs py-2 px-4">
+                                Hapus Permanen
+                            </button>
+                        </form>
                     </div>
 
                     <span class="text-xs text-[#617586]">

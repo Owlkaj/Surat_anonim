@@ -31,7 +31,7 @@ class SuratAnonimFeatureTest extends TestCase
             'body' => 'Halo ini adalah surat rahasia untukmu yang sangat berharga.',
             'target_type' => 'manual',
             'target_label' => '@sahabat',
-            'visibility' => 'unlisted',
+            'visibility' => 'private',
             'music_url' => 'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT',
         ]);
 
@@ -39,7 +39,7 @@ class SuratAnonimFeatureTest extends TestCase
         $this->assertDatabaseHas('letters', [
             'sender_user_id' => $user->id,
             'target_label' => '@sahabat',
-            'visibility' => 'unlisted',
+            'visibility' => 'private',
         ]);
 
         $letter = Letter::where('sender_user_id', $user->id)->first();

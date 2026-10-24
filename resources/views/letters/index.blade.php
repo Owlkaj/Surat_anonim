@@ -42,7 +42,6 @@
                         <select id="letterVisibility" name="visibility" class="w-full rounded-xl border-[#E2EAF0] focus:border-[#38A9F5] focus:ring focus:ring-[#38A9F5]/20 text-sm py-2.5">
                             <option value="">Semua visibilitas</option>
                             <option value="private" @selected(request('visibility') === 'private')>Privat</option>
-                            <option value="unlisted" @selected(request('visibility') === 'unlisted')>Unlisted</option>
                             <option value="public_pending" @selected(request('visibility') === 'public_pending')>Menunggu moderasi</option>
                             <option value="public" @selected(request('visibility') === 'public')>Publik</option>
                         </select>
@@ -91,7 +90,7 @@
                                         </p>
 
                                         <div class="flex flex-wrap items-center gap-4 text-xs text-[#617586] pt-1">
-                                            <span>Target: <strong>{{ $item->target_label ?? 'Manual / Tanpa Kontak' }}</strong></span>
+                                            <span>Target: <strong>{{ $item->target_label ?? 'Tanpa label' }}</strong></span>
                                             <span>Dibuka: <strong>{{ $item->view_count }}x</strong></span>
                                             @if ($threadReplies > 0)
                                                 <span class="text-[#38A9F5] font-semibold">
@@ -129,6 +128,14 @@
                                                 </button>
                                             </form>
                                         @endif
+
+                                        <form action="{{ route('letters.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus PERMANEN surat ini beserta balasan dan seluruh data terkait? Tindakan ini tidak dapat dibatalkan dan tautan rahasia langsung tidak berlaku.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-danger text-xs py-2 px-3">
+                                                Hapus
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             @endforeach

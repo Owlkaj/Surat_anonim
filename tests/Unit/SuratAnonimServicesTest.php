@@ -38,6 +38,38 @@ class SuratAnonimServicesTest extends TestCase
         $this->assertFalse($validator->isValid('https://random-malicious-site.com/track'));
     }
 
+    public function test_music_media_info_exposes_player_capabilities(): void
+    {
+        $validator = new MusicUrlValidator();
+
+        $youtube = $validator->getMediaInfo('https://youtu.be/dQw4w9WgXcQ');
+        $this->assertSame('youtube', $youtube['player']);
+        $this->assertSame('dQw4w9WgXcQ', $youtube['youtube_id']);
+        $this->assertTrue($youtube['autoplay']);
+        $this->assertTrue($youtube['volume']);
+
+        $youtubeMusic = $validator->getMediaInfo('https://music.youtube.com/watch?v=dQw4w9WgXcQ');
+        $this->assertSame('dQw4w9WgXcQ', $youtubeMusic['youtube_id']);
+
+        $soundcloud = $validator->getMediaInfo('https://soundcloud.com/artist/track');
+        $this->assertSame('soundcloud', $soundcloud['player']);
+        $this->assertStringContainsString('w.soundcloud.com/player', $soundcloud['embed_url']);
+        $this->assertTrue($soundcloud['volume']);
+
+        $spotify = $validator->getMediaInfo('https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT');
+        $this->assertSame('spotify', $spotify['player']);
+        $this->assertSame('spotify:track:4cOdK2wGLETKBW3PvgPWqT', $spotify['uri']);
+        $this->assertFalse($spotify['volume'], 'Spotify tidak menyediakan kontrol volume dari halaman induk');
+
+        $spotifyIntl = $validator->getMediaInfo('https://open.spotify.com/intl-id/track/4cOdK2wGLETKBW3PvgPWqT');
+        $this->assertSame('spotify:track:4cOdK2wGLETKBW3PvgPWqT', $spotifyIntl['uri']);
+
+        $apple = $validator->getMediaInfo('https://music.apple.com/id/album/contoh/123456');
+        $this->assertSame('apple', $apple['player']);
+        $this->assertFalse($apple['autoplay']);
+        $this->assertSame('https://embed.music.apple.com/id/album/contoh/123456', $apple['embed_url']);
+    }
+
     public function test_privacy_service_masks_email_safely(): void
     {
         $privacy = new PrivacyService();

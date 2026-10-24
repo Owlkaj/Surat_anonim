@@ -8,6 +8,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +26,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Pastikan tautan (termasuk tautan rahasia di email) memakai domain publik
+        // ketika aplikasi diakses lewat domain/tunnel tetapi APP_URL masih lokal.
+        $publicUrl = rtrim((string) config('app.public_url'), '/');
+        $appUrl = rtrim((string) config('app.url'), '/');
+
+        if ($publicUrl !== '' && $publicUrl !== $appUrl) {
+            URL::forceRootUrl($publicUrl);
+
+            if (str_starts_with($publicUrl, 'https://')) {
+                URL::forceScheme('https');
+            }
+        }
+
         // Tanggal dan waktu mengikuti bulan dalam bahasa Indonesia.
         Carbon::setLocale('id');
 

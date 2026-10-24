@@ -22,29 +22,8 @@
 
                 <div class="letter-body-text">{{ trim($letter->body) }}</div>
 
-                @if ($mediaInfo)
-                    <div class="p-5 rounded-2xl border border-blue-100 bg-blue-50/40 space-y-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-[#172B3A]">
-                            <span class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-[#38A9F5]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
-                                Lagu Pengiring: {{ $mediaInfo['provider'] }}
-                            </span>
-                            <a href="{{ $mediaInfo['url'] }}" target="_blank" rel="noopener noreferrer" class="text-[#38A9F5] hover:underline">
-                                Buka Tautan &rarr;
-                            </a>
-                        </div>
-
-                        @if ($mediaInfo['embed_url'])
-                            <div class="rounded-xl overflow-hidden aspect-video max-h-48">
-                                <iframe src="{{ $mediaInfo['embed_url'] }}"
-                                        title="Pemutar musik {{ $mediaInfo['provider'] }}"
-                                        class="w-full h-full border-0"
-                                        allow="encrypted-media"
-                                        loading="lazy"></iframe>
-                            </div>
-                        @endif
-                    </div>
-                @endif
+                <!-- Musik latar: autoplay tanpa kotak pemutar di dalam surat. -->
+                <x-letter-music :media-info="$mediaInfo" />
 
                 <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
                     <button type="button" id="btnOpenReport" class="btn-secondary text-xs text-gray-500 hover:text-red-600 self-start">

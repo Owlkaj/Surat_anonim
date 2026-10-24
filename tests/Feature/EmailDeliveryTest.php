@@ -122,6 +122,20 @@ class EmailDeliveryTest extends TestCase
         Mail::assertSentCount(3);
     }
 
+    public function test_notification_mail_has_text_alternative_and_unsubscribe_header(): void
+    {
+        config(['mail.unsubscribe_url' => 'https://example.com/unsubscribe']);
+
+        $mail = new LetterNotificationMail('https://example.com/letters/token-uji');
+
+        $this->assertSame('emails.letter_notification', $mail->content()->view);
+        $this->assertSame('emails.letter_notification_text', $mail->content()->text);
+        $this->assertSame(
+            ['List-Unsubscribe' => '<https://example.com/unsubscribe>'],
+            $mail->headers()->text
+        );
+    }
+
     private function makeDelivery(array $overrides = []): DeliveryJob
     {
         $user = User::factory()->create();
