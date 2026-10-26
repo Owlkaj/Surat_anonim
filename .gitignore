@@ -37,6 +37,7 @@ Thumbs.db
 /.freebuff/
 /.agents/
 /.gemini/
+skills-lock.json
 
 # Binary tunnel (ukuran besar, unduh terpisah)
 cloudflared.exe

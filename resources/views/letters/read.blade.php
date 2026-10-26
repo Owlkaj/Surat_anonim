@@ -113,18 +113,10 @@
                     <button type="button" id="btnOpenReport" class="btn-secondary text-xs py-2.5 px-4 text-gray-600 hover:text-red-600">
                         Laporkan
                     </button>
-
-                    <!-- Blokir Action -->
-                    <form action="{{ route('letters.block', $token) }}" method="POST" onsubmit="return confirm('Apakah kamu ingin berhenti menerima email terkait surat ini? Tindakan ini tidak menghapus surat yang sudah kamu baca.');">
-                        @csrf
-                        <button type="submit" class="btn-secondary text-xs py-2.5 px-4 text-gray-500 hover:text-red-600 whitespace-normal">
-                            Berhenti Menerima / Blokir
-                        </button>
-                    </form>
                 </div>
 
                 <p class="text-[11px] text-[#617586]">
-                    Tautan rahasia dapat dibagikan atau kedaluwarsa.
+                    Tautan rahasia dapat dibagikan atau kedaluwarsa. Penerima email dapat berhenti menerima pemberitahuan melalui tautan resmi yang disertakan di dalam email.
                 </p>
             </div>
 
@@ -164,6 +156,9 @@
                 @csrf
                 <input type="hidden" name="content_type" value="letter">
                 <input type="hidden" name="content_id" value="{{ $letter->id }}">
+                <!-- Tautan rahasia surat yang sedang dibaca: membuktikan pelapor
+                     memiliki akses ke surat ini, dan mencegah oracle keberadaan konten. -->
+                <input type="hidden" name="access_token" value="{{ $token }}">
 
                 <div>
                     <label for="reportCategory" class="block text-xs font-bold text-[#172B3A] mb-1">Kategori Masalah <span class="text-red-500" aria-hidden="true">*</span></label>

@@ -9,6 +9,7 @@ use App\Services\MusicUrlValidator;
 use App\Services\SecretLinkService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class LetterAccessController extends Controller
@@ -20,14 +21,14 @@ class LetterAccessController extends Controller
     ) {}
 
     /**
-     * Read an anonymous letter via its secret token link.
+     * Baca surat anonim lewat tautan rahasia.
      */
     public function show(string $token)
     {
         $letter = $this->secretLinkService->findByRawToken($token);
 
         if (!$letter) {
-            // Anti-enumeration: neutral response without leaking why it's unavailable
+            // Anti-enumerasi: respons netral tanpa mengungkap kenapa surat tidak tersedia.
             return response()->view('letters.unavailable', [], 404);
         }
 
@@ -47,7 +48,8 @@ class LetterAccessController extends Controller
 
         $mediaInfo = $this->musicValidator->getMediaInfo($letter->music_url);
 
-        // Store the active letter token in session so after login/register, user can reply
+        // Simpan token surat yang sedang aktif di sesi, agar setelah login/register
+        // pengguna bisa membalas surat tanpa perlu membuka tautan lagi.
         Session::put('active_letter_token', $token);
         Session::put('active_letter_id', $letter->id);
 
@@ -57,23 +59,34 @@ class LetterAccessController extends Controller
     }
 
     /**
-     * Opt-out / block contact for the letter.
+     * HENTIKAN MENERIMA EMAIL (opt-out) lewat tautan bertanda tangan.
+     *
+     * Tautan ini hanya dikirimkan ke alamat email penerima (lihat
+     * LetterNotificationMail & SendLetterNotificationJob), sehingga pemegangnya
+     * telah membuktikan akses ke mailbox. Tautan ini tidak dapat digenerate oleh
+     * pengirim surat karena memerlukan rahasia aplikasi (APP_KEY).
      */
-    public function block(Request $request, string $token)
+    public function blockFromEmail(Request $request, Letter $letter)
     {
-        $letter = $this->secretLinkService->findByRawToken($token);
+        // Middleware 'signed' sudah memastikan tautan ini cocok dengan surat
+        // (ID surat + tanda tangan) dan belum kedaluwarsa (30 hari).
 
-        if ($letter && $letter->target_contact_hmac) {
-            BlockedContact::firstOrCreate(
-                ['contact_hmac' => $letter->target_contact_hmac],
-                [
-                    'owner_user_id' => Auth::id(),
-                    'reason_code' => 'recipient_opt_out',
-                    'source' => 'recipient_action',
-                ]
-            );
+        if (!$letter->target_contact_hmac) {
+            // Surat manual (tanpa email penerima) tidak memiliki email untuk diblokir.
+            return Redirect::back()
+                ->with('info', 'Tidak ada pengaturan pengiriman email pada surat ini.');
         }
 
-        return redirect()->route('home')->with('success', 'Kamu berhasil berhenti menerima dan memblokir pengiriman berikutnya terkait pesan ini.');
+        BlockedContact::firstOrCreate(
+            ['contact_hmac' => $letter->target_contact_hmac],
+            [
+                'owner_user_id' => Auth::id(),
+                'reason_code' => 'recipient_opt_out',
+                'source' => 'recipient_email',
+            ]
+        );
+
+        return Redirect::route('home')
+            ->with('success', 'Terima kasih. Email terkait surat ini sudah dihentikan, dan pengiriman berikutnya terkait pesan ini akan diblokir.');
     }
 }

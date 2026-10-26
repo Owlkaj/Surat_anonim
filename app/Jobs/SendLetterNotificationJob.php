@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\Mailer\Exception\UnexpectedResponseException;
 use Throwable;
 
@@ -84,8 +85,18 @@ class SendLetterNotificationJob implements ShouldQueue, ShouldBeEncrypted
             return;
         }
 
+        // Tautan opt-out bertanda tangan per-surat yang dikirim ke email penerima
+        // (membuktikan akses mailbox; tidak dapat digenerate oleh pengirim).
+        $unsubscribeUrl = URL::temporarySignedRoute(
+            'letters.unsubscribe',
+            Carbon::now()->addDays(30),
+            ['letter' => $letter->id]
+        );
+
         try {
-            $sent = Mail::to($email)->send(new LetterNotificationMail($this->secretUrl));
+            $sent = Mail::to($email)->send(
+                new LetterNotificationMail($this->secretUrl, $letter->target_label ?: 'Penerima', $unsubscribeUrl)
+            );
         } catch (UnexpectedResponseException $e) {
             $code = (int) $e->getCode();
 

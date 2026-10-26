@@ -69,6 +69,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Trusted Proxies
+    |--------------------------------------------------------------------------
+    |
+    | Hanya alamat proxy di daftar ini yang boleh menentukan IP klien melalui
+    | header X-Forwarded-For. Jangan gunakan "*": siapa pun dapat memalsukan
+    | IP dan melewati rate limit berbasis IP.
+    |
+    | Default hanya loopback, cukup untuk cloudflared/nginx di mesin yang sama.
+    | Pisahkan beberapa alamat dengan koma, contoh: "127.0.0.1,::1,10.0.0.5".
+    |
+    */
+
+    'trusted_proxies' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('TRUSTED_PROXIES', '127.0.0.1,::1'))
+    ))),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

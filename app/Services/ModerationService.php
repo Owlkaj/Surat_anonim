@@ -147,20 +147,20 @@ class ModerationService
 
     /**
      * Hitung laporan independen: satu pelapor hanya dihitung sekali per jendela waktu.
+     *
+     * Hanya laporan dari pengguna TERDAFTAR (reporter_user_id tidak null) yang
+     * dapat memicu penyembunyian konten. Laporan tamu tidak dihitung, sehingga
+     * laporan anonim tidak dapat digunakan untuk memblokir/menyembunyikan
+     * konten siapa pun (H-02).
      */
     protected function countIndependentReports(string $contentType, int $contentId, Carbon $since): int
     {
         return Report::where('content_type', $contentType)
             ->where('content_id', $contentId)
             ->whereIn('status', ['pending', 'under_review'])
+            ->whereNotNull('reporter_user_id')
             ->where('created_at', '>=', $since)
-            ->get(['reporter_user_id', 'reporter_hmac'])
-            ->map(function (Report $report): string {
-                return $report->reporter_user_id
-                    ? 'user:'.$report->reporter_user_id
-                    : 'hmac:'.$report->reporter_hmac;
-            })
-            ->unique()
-            ->count();
+            ->distinct('reporter_user_id')
+            ->count('reporter_user_id');
     }
 }

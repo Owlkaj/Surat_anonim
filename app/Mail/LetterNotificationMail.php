@@ -16,14 +16,16 @@ class LetterNotificationMail extends Mailable
 
     public string $secretUrl;
     public string $targetLabel;
+    public ?string $unsubscribeUrl = null;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(string $secretUrl, string $targetLabel = 'Penerima')
+    public function __construct(string $secretUrl, string $targetLabel = 'Penerima', ?string $unsubscribeUrl = null)
     {
         $this->secretUrl = $secretUrl;
         $this->targetLabel = $targetLabel;
+        $this->unsubscribeUrl = $unsubscribeUrl;
     }
 
     /**
@@ -53,6 +55,12 @@ class LetterNotificationMail extends Mailable
 
         if ($unsubscribeUrl !== '') {
             $headers['List-Unsubscribe'] = '<' . $unsubscribeUrl . '>';
+        }
+
+        if ($this->unsubscribeUrl !== null) {
+            // Tautan opt-out bertanda tangan (per surat) agar penyedia email
+            // menampilkan tombol "Stop" dan memberi penerima kontrol langsung.
+            $headers['List-Unsubscribe'] = '<' . $this->unsubscribeUrl . '>';
         }
 
         return new Headers(text: $headers);

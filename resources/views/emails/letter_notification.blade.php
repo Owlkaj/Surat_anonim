@@ -42,12 +42,20 @@
         <div class="footer">
             <p><strong>Mengapa kamu menerima email ini?</strong> Email ini dikirim otomatis karena seseorang memasukkan alamat ini sebagai penerima surat. Kamu tidak perlu membalas email ini.</p>
             <p>Kamu dapat membaca surat tanpa membuat akun. Jika kamu tidak mengenal pengirim atau tidak ingin membacanya, abaikan saja email ini.</p>
-            <p>
-                Bantuan: <a href="mailto:{{ config('mail.reply_to.address') }}" class="link">{{ config('mail.reply_to.address') }}</a>
-                @if (config('mail.unsubscribe_url'))
-                    &bull; <a href="{{ config('mail.unsubscribe_url') }}" class="link">Berhenti menerima email</a>
-                @endif
-            </p>
+            @if($unsubscribeUrl)
+                <p>
+                    Jika kamu ingin berhenti menerima email terkait surat ini di masa depan,
+                    <a href="{{ $unsubscribeUrl }}" class="link">klik tautan "Berhenti menerima email"</a>.
+                    Tindakan ini hanya memblokir pengiriman email berikutnya.
+                </p>
+            @else
+                <p>
+                    Bantuan: <a href="mailto:{{ config('mail.reply_to.address') }}" class="link">{{ config('mail.reply_to.address') }}</a>
+                    @if (config('mail.unsubscribe_url'))
+                        &bull; <a href="{{ config('mail.unsubscribe_url') }}" class="link">Berhenti menerima email</a>
+                    @endif
+                </p>
+            @endif
             <p>&copy; {{ date('Y') }} {{ config('app.name', 'SuratAnonim') }}. Seluruh hak cipta dilindungi.</p>
         </div>
     </div>

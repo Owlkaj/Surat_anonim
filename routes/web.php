@@ -26,19 +26,20 @@ Route::get('/letters/{token}', [LetterAccessController::class, 'show'])
     ->middleware('throttle:letter-access')
     ->name('letters.access')
     ->where('token', '[A-Za-z0-9_-]{15,}');
-Route::post('/letters/{token}/block', [LetterAccessController::class, 'block'])
-    ->middleware('throttle:letter-block')
-    ->name('letters.block')
-    ->where('token', '[A-Za-z0-9_-]{15,}');
 Route::get('/buka/{token}', [LetterAccessController::class, 'show'])
     ->middleware('throttle:letter-access')
     ->name('letters.buka');
-Route::post('/buka/{token}/block', [LetterAccessController::class, 'block'])
-    ->middleware('throttle:letter-block')
-    ->name('letters.buka.block');
 Route::get('/l/{token}', [LetterAccessController::class, 'show'])
     ->middleware('throttle:letter-access')
     ->name('letters.short');
+
+// HENTIKAN MENERIMA EMAIL / OPT-OUT: hanya melalui tautan bertanda tangan
+// yang dikirim ke alamat email penerima (membuktikan akses ke mailbox),
+// bukan sembarang pemegang tautan surat. Ini mencegah pengirim/maling tautan
+// memblokir email korban secara permanen dan lintas surat (H-04).
+Route::get('/unsubscribe/{letter}', [LetterAccessController::class, 'blockFromEmail'])
+    ->middleware(['signed', 'throttle:letter-block'])
+    ->name('letters.unsubscribe');
 
 // Public / Authenticated Reporting
 Route::post('/reports', [ReportController::class, 'store'])
